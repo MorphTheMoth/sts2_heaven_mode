@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(powershell -ExecutionPolicy Bypass -File tools/build_release.ps1 2>&1)",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"& 'C:\\\\projects\\\\sts2_heaven_mode\\\\libs\\\\megadot.exe' --headless --path 'C:\\\\projects\\\\sts2_heaven_mode' --script 'res://tools/build_pck.gd' 2>&1\")",
+      "Bash(powershell -ExecutionPolicy Bypass -Command \"& 'C:\\\\projects\\\\sts2_heaven_mode\\\\libs\\\\megadot.exe' --version 2>&1\")",
+      "Bash(rm -rf \"C:\\\\projects\\\\sts2_heaven_mode\\\\build\" && powershell -ExecutionPolicy Bypass -File tools/build_release.ps1 2>&1)",
+      "Bash(rm -rf C:/projects/sts2_heaven_mode/build && powershell -ExecutionPolicy Bypass -File tools/build_release.ps1 2>&1)",
+      "Bash(dotnet build:*)",
+      "Bash(cat -A \"C:\\\\projects\\\\sts2_heaven_mode\\\\HeavenMode\\\\localization\\\\zh_cn.json\" 2>/dev/null || python3 -c \"\nwith open\\(r'C:/projects/sts2_heaven_mode/HeavenMode/localization/zh_cn.json', 'rb'\\) as f:\n    data = f.read\\(\\)\nprint\\(repr\\(data\\)\\)\n\")",
+      "Bash(python3 -c \"import json; data=open\\('C:/projects/sts2_heaven_mode/HeavenMode/localization/zh_cn.json',encoding='utf-8'\\).read\\(\\); print\\(json.loads\\(data\\)\\)\")",
+      "Bash(python3 -c \"\nimport json\ndata = open\\('C:/projects/sts2_heaven_mode/HeavenMode/localization/zh_cn.json', encoding='utf-8'\\).read\\(\\)\nobj = json.loads\\(data\\)\nfor k, v in obj.items\\(\\):\n    print\\(f'{k}: {v}'\\)\n\" 2>&1 | python3 -c \"import sys; sys.stdout.buffer.write\\(sys.stdin.buffer.read\\(\\)\\)\")",
+      "Bash(python3 -c \"import json; d=json.load\\(open\\('C:/projects/sts2_heaven_mode/HeavenMode/localization/zh_cn.json',encoding='utf-8'\\)\\); [print\\(k,'=',v\\) for k,v in d.items\\(\\)]\")"
+    ]
+  }
+}
