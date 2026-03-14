@@ -106,6 +106,11 @@ public static class ModEntry
 
         TryPatch(
             harmony,
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpNewSinglePlayer)),
+            AccessTools.Method(typeof(Patches_Heaven10), "AfterSetUpNewSinglePlayer"));
+
+        TryPatch(
+            harmony,
             AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpNewMultiPlayer)),
             AccessTools.Method(typeof(Patches_SaveAndLoad), "AfterSetUpNewMultiPlayer"));
 
@@ -118,6 +123,11 @@ public static class ModEntry
             harmony,
             AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpNewMultiPlayer)),
             AccessTools.Method(typeof(Patches_Heaven8), "AfterSetUpNewMultiPlayer"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpNewMultiPlayer)),
+            AccessTools.Method(typeof(Patches_Heaven10), "AfterSetUpNewMultiPlayer"));
 
         TryPatch(
             harmony,
@@ -185,9 +195,38 @@ public static class ModEntry
 
         TryPatch(
             harmony,
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpSavedSinglePlayer)),
+            AccessTools.Method(typeof(Patches_Heaven10), "BeforeSetUpSavedSinglePlayer"),
+            isPrefix: true);
+
+        TryPatch(
+            harmony,
             AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpSavedMultiPlayer)),
             AccessTools.Method(typeof(Patches_SaveAndLoad), "BeforeSetUpSavedMultiPlayer"),
             isPrefix: true);
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpSavedMultiPlayer)),
+            AccessTools.Method(typeof(Patches_Heaven10), "BeforeSetUpSavedMultiPlayer"),
+            isPrefix: true);
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.ProceedFromTerminalRewardsScreen)),
+            AccessTools.Method(typeof(Patches_Heaven10), "BeforeProceedFromTerminalRewardsScreen"),
+            isPrefix: true);
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.EnterNextAct)),
+            AccessTools.Method(typeof(Patches_Heaven10), "BeforeEnterNextAct"),
+            isPrefix: true);
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(Creature), nameof(Creature.AfterTurnStart)),
+            AccessTools.Method(typeof(Patches_Heaven10), "AfterTurnStart"));
 
         TryPatch(
             harmony,

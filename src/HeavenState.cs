@@ -19,6 +19,7 @@ internal static class HeavenState
     public const int KillPunishLevel = 7;
     public const int PotionLimitLevel = 8;
     public const int ShuffleTaxLevel = 9;
+    public const int TripleBossLevel = 10;
     public const int NeowOpeningHp = 36;
 
     public static int SelectedOption { get; set; } = 0;
@@ -109,6 +110,13 @@ internal static class HeavenState
             return Loc.Get(
                 "HEAVEN_DESC_9",
                 "Includes official Ascension 10 and all Heaven 1-8 effects. Each time you shuffle your discard into your draw pile this turn, cards drawn afterward cost 1 more per shuffle. This extra cost is cleared at the start of your next turn.");
+        }
+
+        if (level == TripleBossLevel)
+        {
+            return Loc.Get(
+                "HEAVEN_DESC_10",
+                "Includes official Ascension 10 and all Heaven 1-9 effects. In Act 3 you must defeat a third boss. Starting from round 2 of that final boss fight, after the players act, it burns a random draw-pile card from ceil(n/2) players.");
         }
 
         if (level == NeowHpLevel)

@@ -32,6 +32,7 @@ The official ascension panel becomes the only difficulty UI:
 - Official ascension `0` + left arrow => Heaven `1`
 - Heaven `1` + left arrow => Heaven `2` ... Heaven `10`
 - Heaven `1..10` + right arrow => move back toward official ascension `0`
+- At Heaven `10`, the left arrow is hidden because there is no further Heaven level to advance into
 - The official description box shows the current Heaven title and description while Heaven is selected
 
 ## Preference persistence

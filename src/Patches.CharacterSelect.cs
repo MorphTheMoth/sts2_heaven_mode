@@ -169,7 +169,8 @@ internal static class Patches_CharacterSelect
             bool canMoveLeft = HeavenState.SelectedOption < maxSelectableHeaven;
             bool canMoveRight = HeavenState.SelectedOption > 0 || maxAscension > 0;
 
-            ((Godot.CanvasItem)leftArrow).Visible = hasHeavenEntry;
+            bool showLeftArrow = hasHeavenEntry && HeavenState.SelectedOption < HeavenState.MaxLevel;
+            ((Godot.CanvasItem)leftArrow).Visible = showLeftArrow;
             ((Godot.CanvasItem)rightArrow).Visible = canMoveRight;
 
             if (canMoveLeft)
