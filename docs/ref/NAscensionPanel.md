@@ -19,9 +19,8 @@ Use Harmony to hijack the official ascension panel instead of injecting a custom
 - When official ascension is `0`, patch `DecrementAscension()` so the left arrow enters Heaven levels.
 - Heaven levels are stored in `HeavenState.SelectedOption`:
   - `0` = Off
-  - `1` = Heaven 1
-  - `2` = Heaven 2
-- Patch `IncrementAscension()` so Heaven `2 -> 1 -> 0` uses the official right arrow.
+  - `1..10` = Heaven 1..10
+- Patch `IncrementAscension()` so Heaven `10 -> ... -> 1 -> 0` uses the official right arrow.
 - Patch `RefreshArrowVisibility()` so the left arrow remains visible at official ascension `0`.
 - Patch `RefreshAscensionText()` to overwrite the official description box with Heaven title + description.
 - Patch `SetAscensionLevel(int)` to clear Heaven selection when the player moves back into official ascension `> 0`.
@@ -31,8 +30,8 @@ Use Harmony to hijack the official ascension panel instead of injecting a custom
 The official ascension panel becomes the only difficulty UI:
 
 - Official ascension `0` + left arrow => Heaven `1`
-- Heaven `1` + left arrow => Heaven `2`
-- Heaven `1/2` + right arrow => move back toward official ascension `0`
+- Heaven `1` + left arrow => Heaven `2` ... Heaven `10`
+- Heaven `1..10` + right arrow => move back toward official ascension `0`
 - The official description box shows the current Heaven title and description while Heaven is selected
 
 ## Preference persistence
@@ -44,3 +43,26 @@ Current repo behavior:
 - save the selected Heaven level per character when the player changes Heaven in `NAscensionPanel`
 - clear the saved Heaven preference when the player moves back to official ascension `> 0`
 - restore the saved Heaven level when `StartRunLobby.SetSingleplayerAscensionAfterCharacterChanged(ModelId)` reapplies that character's preferred difficulty
+- Heaven descriptions communicate inheritance:
+  - Heaven `1` enables the ancient option-count restriction
+  - Heaven `6` additionally enables the Neow HP override
+  - higher Heaven levels inherit lower Heaven effects
+
+## Unlock gating
+
+Relevant vanilla surfaces:
+
+- `NAscensionPanel.RefreshArrowVisibility()`
+- `NAscensionPanel.DecrementAscension()`
+- `MegaCrit.Sts2.Core.Nodes.GodotExtensions.NClickableControl.Disable()`
+- `MegaCrit.Sts2.Core.Nodes.GodotExtensions.NClickableControl.Enable()`
+
+Implementation note in this repo:
+
+- Heaven unlock state is checked when the official ascension panel is at `0`.
+- Official A10 remains the vanilla prerequisite:
+  - if the selected character's `_maxAscension < 10`, Heaven `1` is still locked
+- Heaven progression is stored separately by the mod:
+  - clearing Heaven `n` unlocks Heaven `n+1`
+- If the mod config `config.json` has `"unlock": true`, all Heaven levels are forced unlocked.
+- The official left arrow remains visible at ascension `0`, but it is disabled via `NClickableControl.Disable()` when the next Heaven step is not unlocked.

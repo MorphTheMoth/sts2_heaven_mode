@@ -85,7 +85,7 @@ internal static class HeavenPersistence
         {
             HeavenPreferenceMetadata metadata = LoadPreferences() ?? new HeavenPreferenceMetadata();
             string key = characterId.ToString();
-            int clampedLevel = Math.Clamp(heavenLevel, 0, 2);
+            int clampedLevel = Math.Clamp(heavenLevel, 0, HeavenState.MaxLevel);
 
             if (clampedLevel <= 0)
                 metadata.CharacterLevels.Remove(key);
@@ -112,7 +112,7 @@ internal static class HeavenPersistence
                 return 0;
 
             return metadata.CharacterLevels.TryGetValue(characterId.ToString(), out int level)
-                ? Math.Clamp(level, 0, 2)
+                ? Math.Clamp(level, 0, HeavenState.MaxLevel)
                 : 0;
         }
         catch (Exception ex)

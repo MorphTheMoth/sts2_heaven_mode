@@ -1,12 +1,12 @@
 # AncientEventModel
 
-## Feature: Neow start HP reset and heal
+## Feature: Ancient option limits and Neow HP override
 
 Location: `sts2_decompile/sts2/MegaCrit/sts2/Core/Models/AncientEventModel.cs`
 
 Key method: `protected override async Task BeforeEventStarted()`
 
-Relevant logic:
+Relevant vanilla logic:
 
 ```csharp
 if (ancientEventModel is Neow)
@@ -33,25 +33,28 @@ Notes:
 
 Current mod strategy in this repo:
 
+- Patch `AncientEventModel.SetInitialEventState(bool)` with a postfix.
+- When Heaven `1+` is selected, limit initial ancient options by act:
+  - Act 1 ancient: `2` options
+  - Act 2 and Act 3 ancient: `1` option
 - Patch `AncientEventModel.BeforeEventStarted()` with a Harmony prefix.
-- Only when `__instance is Neow` and Heaven option `1` is selected, skip the original method.
+- Only when `__instance is Neow` and Heaven `6+` is selected, skip the original method.
 - Run a custom replacement flow:
   - `SetCurrentHpInternal(0)`
-  - `CreatureCmd.Heal(..., 10M, false)`
+  - `CreatureCmd.Heal(..., 36M, false)`
   - `LerpAtNeow()`
   - write `HealedAmount`
+- Also when Heaven `3+` is selected and the run is entering Act 2 or Act 3, skip the original Ancient heal flow and replace only the heal amount.
+- The trigger stays the vanilla Ancient event startup; only the amount changes to `60%` of missing HP.
 
 ## Confirmed implementation for this repo
-
-Goal:
-
-- When the player selects Heaven option `1` or `2`, entering Neow should leave current HP at `10`.
-- Current repo logic treats Heaven option `2` as including Heaven option `1` for this effect.
 
 Confirmed hook point:
 
 - Class: `MegaCrit.Sts2.Core.Models.AncientEventModel`
-- Method: `BeforeEventStarted()`
+- Methods:
+  - `BeforeEventStarted()`
+  - `SetInitialEventState(bool isPreFinished)`
 
 Why this works:
 
@@ -59,12 +62,21 @@ Why this works:
 - Patching later points such as `HealInternal` or unrelated event UI state is less reliable.
 - A Harmony prefix on `BeforeEventStarted()` can fully replace the Neow-specific start flow and keep the result stable.
 
-Confirmed replacement flow used by this mod:
+Confirmed replacement flow used by this mod for Heaven `6+`:
 
 ```csharp
 creature.SetCurrentHpInternal(0M);
-await CreatureCmd.Heal(creature, 10M, false);
+await CreatureCmd.Heal(creature, 36M, false);
 TaskHelper.RunSafely(NRun.Instance.GlobalUi.TopBar.Hp.LerpAtNeow());
+SetHealedAmountMethod?.Invoke(ancientEventModel, new object[] { creature.CurrentHp - oldHp });
+```
+
+Confirmed replacement flow used by this mod for Heaven `3+` act transitions:
+
+```csharp
+int missingHp = creature.MaxHp - creature.CurrentHp;
+decimal amount = Math.Ceiling(missingHp * 0.6M);
+await CreatureCmd.Heal(creature, amount, false);
 SetHealedAmountMethod?.Invoke(ancientEventModel, new object[] { creature.CurrentHp - oldHp });
 ```
 
@@ -75,5 +87,5 @@ Related helper method also observed:
 
 Usage in this mod:
 
-- A postfix on `SetCurrentHpInternal` is useful for verification logging.
-- The actual functional fix should remain at `AncientEventModel.BeforeEventStarted()`.
+- A postfix on `SetCurrentHpInternal` is useful for verification logging when Heaven `6+` is active.
+- Ancient initial option count is best adjusted after `SetInitialEventState(bool)` has produced the vanilla option list.

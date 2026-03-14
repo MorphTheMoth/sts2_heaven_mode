@@ -28,3 +28,21 @@ Notes:
 - Hook-based heal modifiers run here before `creature.HealInternal(amount)`.
 - VFX, history tracking, and `AfterCurrentHpChanged` also depend on the same `amount`.
 - If a mod wants Neow's opening heal to end at `10` HP, patching `CreatureCmd.Heal(...)` before execution keeps the whole downstream flow aligned with the capped value.
+
+## Heaven 7 hook
+
+Relevant method:
+
+- `public static async Task Kill(IReadOnlyCollection<Creature> creatures, bool force = false)`
+
+Why this hook works for Heaven 7:
+
+- normal combat damage collects killed creatures and then routes them through `CreatureCmd.Kill(...)`
+- a postfix here can count how many monsters actually died in that batch
+- this supports single-target kills and multi-kills with the same logic
+
+Current mod strategy in this repo:
+
+- patch `CreatureCmd.Kill(IReadOnlyCollection<Creature>, bool)` with a postfix
+- after the original kill flow finishes, count `creatures` where `IsMonster && IsDead`
+- apply `2` HP loss per killed monster to the local player

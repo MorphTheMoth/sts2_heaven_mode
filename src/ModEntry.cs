@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Modding;
 using MegaCrit.Sts2.Core.Models;
+using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Multiplayer.Game.Lobby;
 using MegaCrit.Sts2.Core.Nodes.Screens.MainMenu;
 using MegaCrit.Sts2.Core.Runs;
@@ -21,6 +23,9 @@ public static class ModEntry
     {
         try
         {
+            HeavenConfig.Initialize();
+            ModManager.OnMetricsUpload += HeavenUnlockProgress.HandleMetricsUpload;
+
             Assembly assembly = typeof(ModEntry).Assembly;
             int patchTypeCount = assembly.GetTypes().Count(t =>
                 t.GetCustomAttributes(inherit: false).Any(a =>
@@ -33,6 +38,7 @@ public static class ModEntry
             harmony.PatchAll(assembly);
             ApplyManualPatches(harmony);
             Log.Info($"[HeavenMode] PatchAll applied for {assembly.GetName().Name}, patch types discovered: {patchTypeCount}");
+            Log.Info($"[HeavenMode] Config loaded. unlock={HeavenConfig.UnlockAll}");
         }
         catch (Exception ex)
         {
@@ -69,6 +75,16 @@ public static class ModEntry
 
         TryPatch(
             harmony,
+            AccessTools.Method(typeof(AncientEventModel), "SetInitialEventState"),
+            AccessTools.Method(typeof(Patches_Player), "AfterSetInitialEventState"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(CardSelectCmd), nameof(CardSelectCmd.FromDeckForRemoval)),
+            AccessTools.Method(typeof(Patches_EventRoom), "AfterFromDeckForRemoval"));
+
+        TryPatch(
+            harmony,
             AccessTools.Method(typeof(RunState), nameof(RunState.CreateForNewRun)),
             AccessTools.Method(typeof(Patches_RunStart), "BeforeCreateForNewRun"),
             isPrefix: true);
@@ -80,13 +96,86 @@ public static class ModEntry
 
         TryPatch(
             harmony,
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpNewSinglePlayer)),
+            AccessTools.Method(typeof(Patches_Heaven3), "AfterSetUpNewSinglePlayer"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpNewSinglePlayer)),
+            AccessTools.Method(typeof(Patches_Heaven8), "AfterSetUpNewSinglePlayer"));
+
+        TryPatch(
+            harmony,
             AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpNewMultiPlayer)),
             AccessTools.Method(typeof(Patches_SaveAndLoad), "AfterSetUpNewMultiPlayer"));
 
         TryPatch(
             harmony,
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpNewMultiPlayer)),
+            AccessTools.Method(typeof(Patches_Heaven3), "AfterSetUpNewMultiPlayer"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.SetUpNewMultiPlayer)),
+            AccessTools.Method(typeof(Patches_Heaven8), "AfterSetUpNewMultiPlayer"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(RunManager), nameof(RunManager.FinalizeStartingRelics)),
+            AccessTools.Method(typeof(Patches_Heaven3), "BeforeFinalizeStartingRelics"),
+            isPrefix: true);
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(MegaCrit.Sts2.Core.Combat.CombatManager), "SetupPlayerTurn"),
+            AccessTools.Method(typeof(Patches_Heaven4), "AfterSetupPlayerTurn"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(MegaCrit.Sts2.Core.Combat.CombatManager), "SetupPlayerTurn"),
+            AccessTools.Method(typeof(Patches_Heaven9), "BeforeSetupPlayerTurn"),
+            isPrefix: true);
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(MegaCrit.Sts2.Core.Combat.CombatManager), "SetupPlayerTurn"),
+            AccessTools.Method(typeof(Patches_Heaven5), "AfterSetupPlayerTurn"));
+
+        TryPatch(
+            harmony,
             AccessTools.Method(typeof(SaveManager), nameof(SaveManager.SaveRun)),
             AccessTools.Method(typeof(Patches_SaveAndLoad), "AfterSaveRun"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(CreatureCmd), nameof(CreatureCmd.Kill), new[] { typeof(IReadOnlyCollection<Creature>), typeof(bool) }),
+            AccessTools.Method(typeof(Patches_Heaven7), "AfterKill"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(MegaCrit.Sts2.Core.Commands.CardPileCmd), "ShuffleIfNecessary"),
+            AccessTools.Method(typeof(Patches_Heaven9), "BeforeShuffleIfNecessary"),
+            isPrefix: true);
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(MegaCrit.Sts2.Core.Commands.CardPileCmd), "ShuffleIfNecessary"),
+            AccessTools.Method(typeof(Patches_Heaven9), "AfterShuffleIfNecessary"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(MegaCrit.Sts2.Core.Hooks.Hook), "AfterCardDrawn"),
+            AccessTools.Method(typeof(Patches_Heaven9), "AfterHookAfterCardDrawn"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(MegaCrit.Sts2.Core.Nodes.Potions.NPotionContainer), "Initialize"),
+            AccessTools.Method(typeof(Patches_PotionUi), "AfterInitialize"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(MegaCrit.Sts2.Core.Nodes.Potions.NPotionContainer), "GrowPotionHolders"),
+            AccessTools.Method(typeof(Patches_PotionUi), "AfterGrowPotionHolders"));
 
         TryPatch(
             harmony,
@@ -109,6 +198,12 @@ public static class ModEntry
             harmony,
             AccessTools.Method(typeof(StartRunLobby), "SetSingleplayerAscensionAfterCharacterChanged"),
             AccessTools.Method(typeof(Patches_CharacterSelect), "AfterSetSingleplayerAscensionAfterCharacterChanged"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(RunManager), "UpdateRichPresence"),
+            AccessTools.Method(typeof(Patches_Platform), "AfterUpdateRichPresence"));
+
     }
 
     private static void TryPatch(Harmony harmony, MethodInfo? original, MethodInfo? patchMethod, bool isPrefix = false)

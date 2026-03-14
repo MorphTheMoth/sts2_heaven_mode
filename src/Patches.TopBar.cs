@@ -58,20 +58,13 @@ internal static class Patches_TopBar
         }
     }
 
-    private static string GetPortraitSuffix(int level) => level switch
-    {
-        1 => Loc.Get("HEAVEN_RUN_TITLE_1", "Heaven 1"),
-        2 => Loc.Get("HEAVEN_RUN_TITLE_2", "Heaven 2"),
-        _ => string.Empty,
-    };
+    private static string GetPortraitSuffix(int level) => HeavenState.GetRunTitle(level);
 
     private static IReadOnlyList<string> GetActiveHeavenTitles()
     {
         List<string> titles = new();
-        if (HeavenState.SelectedOption >= 1)
-            titles.Add(Loc.Get("HEAVEN_TITLE_1", "Human World"));
-        if (HeavenState.SelectedOption >= 2)
-            titles.Add(Loc.Get("HEAVEN_TITLE_2", "Hell of Tongue Pulling"));
+        for (int level = 1; level <= HeavenState.SelectedOption; level++)
+            titles.Add(HeavenState.GetFeatureTitle(level));
         return titles;
     }
 

@@ -73,12 +73,7 @@ internal static class Patches_SaveAndLoad
 
             ascensionLabel.GetType().GetProperty("Text")?.SetValue(
                 ascensionLabel,
-                level switch
-                {
-                    1 => Loc.Get("HEAVEN_RUN_TITLE_1", "Heaven 1"),
-                    2 => Loc.Get("HEAVEN_RUN_TITLE_2", "Heaven 2"),
-                    _ => Loc.Get("HEAVEN_RUN_TITLE_1", "Heaven 1"),
-                });
+                HeavenState.GetRunTitle(level));
 
             var visibleProp = AccessTools.Property(typeof(Godot.CanvasItem), nameof(Godot.CanvasItem.Visible));
             visibleProp?.SetValue(ascensionLabel, true);
