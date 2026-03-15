@@ -88,12 +88,21 @@ internal static class Patches_TopBar
     {
         try
         {
+            ApplyHeavenTopBarLabel(__instance, runState);
             ApplyHeavenTopBarFireVisuals(__instance, runState);
         }
         catch (Exception ex)
         {
             Log.Error($"[HeavenMode] AfterTopBarInitialize failed: {ex}");
         }
+    }
+
+    private static void ApplyHeavenTopBarLabel(NTopBar topBar, IRunState runState)
+    {
+        if (HeavenState.SelectedOption <= 0 || runState.AscensionLevel <= 0)
+            return;
+
+        AscensionLabelRef(topBar).SetTextAutoSize(HeavenState.SelectedOption.ToString());
     }
 
     private static string GetPortraitSuffix(int level) => HeavenState.GetRunTitle(level);
