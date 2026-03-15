@@ -11,11 +11,11 @@ Current mod strategy in this repo:
 
 - keep the real inventory limit on `Player`
 - patch `NPotionContainer.Initialize(...)` and `GrowPotionHolders(...)` with postfixes
-- hide any holder whose index is outside the Heaven-adjusted visible slot count
-- collapse extra holders to zero scale/size
-- shrink the holder container width to the visible slot count
+- do nothing unless vanilla holder count exceeds the player's real `MaxPotionCount`
+- when that mismatch happens, only hide surplus holders
+- keep the vanilla layout unchanged in all cases
 
 Why this is needed:
 
 - Heaven 8 reduces the actual slot count to `1`
-- without a UI patch, the second empty frame can still remain visible or keep occupying layout width even though the player cannot store another potion
+- in mismatch cases, extra holders can remain visible even though the player cannot store another potion there
