@@ -16,3 +16,7 @@
 3. 找到配置文件，将 **`unlock` 字段改为 `true`**。
 
 完成后，所有 Heaven 难度都会被解锁。
+
+## 开发者说明
+
+运行 `tools/build_release.ps1` 前，请确保脚本中的 `$godot` 变量指向一个有效的 Godot 可执行文件，例如 **MegaDot 4.5.1**（`https://megadot.megacrit.com/`），或替换为本机上任意可用的路径。

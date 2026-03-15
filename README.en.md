@@ -16,3 +16,7 @@ If you prefer to unlock all difficulties immediately, you can do so manually:
 3. Locate the configuration file and set the **`unlock` field to `true`**.
 
 After that, all Heaven difficulties will be available.
+
+## Developer Notes
+
+Before running `tools/build_release.ps1`, make sure the `$godot` variable in the script points to a valid Godot executable, such as **MegaDot 4.5.1** (`https://megadot.megacrit.com/`), or replace it with any other available path on your machine.
