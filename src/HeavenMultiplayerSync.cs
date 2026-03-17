@@ -128,6 +128,11 @@ internal static class HeavenMultiplayerSync
         if (lobby == null)
             return;
 
+        BroadcastCurrentLevel(lobby);
+    }
+
+    public static void BroadcastCurrentLevel(StartRunLobby lobby)
+    {
         if (lobby.NetService.Type != NetGameType.Host)
             return;
 

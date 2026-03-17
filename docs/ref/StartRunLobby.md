@@ -76,6 +76,7 @@ Implementation pattern:
 - when a client opens the submenu, it requests the current Heaven level from the host
 - when the host changes Heaven level, it broadcasts the current level
 - when a new player joins, the host sends the current Heaven level to that specific peer
+- immediately before `StartRunLobby.BeginRun(...)` sends the vanilla `LobbyBeginRunMessage`, the host re-broadcasts the Heaven level once more so every client enters the run with the same Heaven state
 
 Client-side apply step:
 
