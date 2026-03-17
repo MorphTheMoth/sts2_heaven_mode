@@ -4,11 +4,11 @@ namespace HeavenMode;
 
 /// <summary>
 /// Shared runtime state for the Heaven selection layered on top of official ascension 0.
-/// SelectedOption: 0 = Off, 1..10 = Heaven levels
+/// SelectedOption: 0 = Off, 1..11 = Heaven levels
 /// </summary>
 internal static class HeavenState
 {
-    public const int MaxLevel = 10;
+    public const int MaxLevel = 11;
     public const int EventPenaltyLevel = 2;
     public const int EventHpLoss = 3;
     public const int ActRecoveryLevel = 3;
@@ -20,6 +20,7 @@ internal static class HeavenState
     public const int PotionLimitLevel = 8;
     public const int ShuffleTaxLevel = 9;
     public const int TripleBossLevel = 10;
+    public const int SaveQuitDestroyLevel = 11;
     public const int NeowOpeningHp = 36;
 
     public static int SelectedOption { get; set; } = 0;
@@ -38,6 +39,8 @@ internal static class HeavenState
 
     public static bool ShouldOverrideNeowOpeningHp => SelectedOption >= NeowHpLevel;
 
+    public static bool ShouldDestroySaveOnQuit => SelectedOption >= SaveQuitDestroyLevel;
+
     public static int GetAncientInitialOptionLimit(int currentActIndex) => currentActIndex <= 0 ? 2 : 1;
 
     public static string GetRunTitle(int level) =>
@@ -45,8 +48,8 @@ internal static class HeavenState
 
     public static string GetFeatureTitle(int level) => level switch
     {
-        1 => Loc.Get("HEAVEN_TITLE_1", "Human World"),
-        2 => Loc.Get("HEAVEN_TITLE_2", "Hell of Tongue Pulling"),
+        1 => Loc.Get("HEAVEN_TITLE_1", "Fading Choices"),
+        2 => Loc.Get("HEAVEN_TITLE_2", "Cruel Bargains"),
         > 0 => Loc.Get($"HEAVEN_TITLE_{level}", GetRunTitle(level)),
         _ => string.Empty,
     };
@@ -60,70 +63,77 @@ internal static class HeavenState
         {
             return Loc.Get(
                 "HEAVEN_DESC_1",
-                "Includes official Ascension 10 effects. Ancients offer 2 options in Act 1 and 1 option in Acts 2 and 3.");
+                "The tower gradually strips away your power to choose. Fate begins to narrow.");
         }
 
         if (level == EventPenaltyLevel)
         {
             return Loc.Get(
                 "HEAVEN_DESC_2",
-                "Includes official Ascension 10 and Human World effects. Event and merchant card removal also make you lose 3 HP, clamped to at least 1.");
+                "Every opportunity comes with a price.");
         }
 
         if (level == ActRecoveryLevel)
         {
             return Loc.Get(
                 "HEAVEN_DESC_3",
-                "Includes official Ascension 10 and all Heaven 1-2 effects. Start Act 1 with Blood Vial. Entering Acts 2 and 3 restores 60% of missing HP.");
+                "Wounds cannot fully heal. Rely on limited supplies to move forward.");
         }
 
         if (level == BurnLevel)
         {
             return Loc.Get(
                 "HEAVEN_DESC_4",
-                "Includes official Ascension 10 and all Heaven 1-3 effects. Starting from round 3, add a Burn into your draw pile each round.");
+                "The tower's flames do not consume you at once. They scorch you slowly.");
         }
 
         if (level == CostIncreaseLevel)
         {
             return Loc.Get(
                 "HEAVEN_DESC_5",
-                "Includes official Ascension 10 and all Heaven 1-4 effects. On the first turn of each combat, increase the cost of a random card in your hand by 1.");
+                "You lose your rhythm at the start of battle. Strategy is disturbed immediately.");
         }
 
         if (level == KillPunishLevel)
         {
             return Loc.Get(
                 "HEAVEN_DESC_7",
-                "Includes official Ascension 10 and all Heaven 1-6 effects. Whenever a monster dies, you take 2 damage.");
+                "Every kill demands your own blood as tribute to the tower.");
         }
 
         if (level == PotionLimitLevel)
         {
             return Loc.Get(
                 "HEAVEN_DESC_8",
-                "Includes official Ascension 10 and all Heaven 1-7 effects. Reduce your starting potion slots to 1 and start with a Potion-Shaped Rock.");
+                "Healing and supplies are exceedingly scarce. You must rely on limited resources.");
         }
 
         if (level == ShuffleTaxLevel)
         {
             return Loc.Get(
                 "HEAVEN_DESC_9",
-                "Includes official Ascension 10 and all Heaven 1-8 effects. Each time you shuffle your discard into your draw pile this turn, cards drawn afterward cost 1 more per shuffle. This extra cost is cleared at the start of your next turn.");
+                "Repeatedly cycling the deck dulls the mind and slows action.");
         }
 
         if (level == TripleBossLevel)
         {
             return Loc.Get(
                 "HEAVEN_DESC_10",
-                "Includes official Ascension 10 and all Heaven 1-9 effects. In Act 3 you must defeat a third boss. Starting from round 2 of that final boss fight, after the players act, it burns a random draw-pile card from ceil(n/2) players.");
+                "The tower tests you tirelessly. In the final battle, the tower devours your cards.");
+        }
+
+        if (level == SaveQuitDestroyLevel)
+        {
+            return Loc.Get(
+                "HEAVEN_DESC_11",
+                "Once you step into the Spire, there is no turning back.");
         }
 
         if (level == NeowHpLevel)
         {
             return Loc.Get(
                 "HEAVEN_DESC_6",
-                "Includes official Ascension 10 and all Heaven 1-5 effects. When Neow starts, your current HP is set to 36.");
+                "The adventure begins from a more dangerous state.");
         }
 
         return Loc.Get(

@@ -12,6 +12,7 @@
   "HEAVEN_8": "8",
   "HEAVEN_9": "9",
   "HEAVEN_10": "10",
+  "HEAVEN_11": "11",
   "HEAVEN_RUN_TITLE_1": "Heaven 1",
   "HEAVEN_RUN_TITLE_2": "Heaven 2",
   "HEAVEN_RUN_TITLE_3": "Heaven 3",
@@ -22,6 +23,7 @@
   "HEAVEN_RUN_TITLE_8": "Heaven 8",
   "HEAVEN_RUN_TITLE_9": "Heaven 9",
   "HEAVEN_RUN_TITLE_10": "Heaven 10",
+  "HEAVEN_RUN_TITLE_11": "Heaven 11",
   "HEAVEN_TITLE_1": "Fading Choices",
   "HEAVEN_TITLE_2": "Cruel Bargains",
   "HEAVEN_TITLE_3": "Lingering Wounds",
@@ -32,6 +34,7 @@
   "HEAVEN_TITLE_8": "Scarce Remedies",
   "HEAVEN_TITLE_9": "Mental Fatigue",
   "HEAVEN_TITLE_10": "Trial of the Triumvirate",
+  "HEAVEN_TITLE_11": "Point of No Return",
   "HEAVEN_DESC_1": "The tower gradually strips away your power to choose. Fate begins to narrow.",
   "HEAVEN_DESC_2": "Every opportunity comes with a price.",
   "HEAVEN_DESC_3": "Wounds cannot fully heal. Rely on limited supplies to move forward.",
@@ -41,5 +44,6 @@
   "HEAVEN_DESC_7": "Every kill demands your own blood as tribute to the tower.",
   "HEAVEN_DESC_8": "Healing and supplies are exceedingly scarce. You must rely on limited resources.",
   "HEAVEN_DESC_9": "Repeatedly cycling the deck dulls the mind and slows action.",
-  "HEAVEN_DESC_10": "The tower tests you tirelessly. In the final battle, the tower devours your cards."
+  "HEAVEN_DESC_10": "The tower tests you tirelessly. In the final battle, the tower devours your cards.",
+  "HEAVEN_DESC_11": "Once you step into the Spire, there is no turning back."
 }

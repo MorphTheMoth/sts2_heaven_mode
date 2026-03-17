@@ -18,9 +18,9 @@ Use Harmony to hijack the official ascension panel instead of injecting a custom
 
 - When official ascension is `0`, patch `DecrementAscension()` so the left arrow enters Heaven levels.
 - Heaven levels are stored in `HeavenState.SelectedOption`:
-  - `0` = Off
-  - `1..10` = Heaven 1..10
-- Patch `IncrementAscension()` so Heaven `10 -> ... -> 1 -> 0` uses the official right arrow.
+- `0` = Off
+- `1..11` = Heaven 1..11
+- Patch `IncrementAscension()` so Heaven `11 -> ... -> 1 -> 0` uses the official right arrow.
 - Patch `RefreshArrowVisibility()` so the left arrow remains visible at official ascension `0`.
 - Patch `RefreshAscensionText()` to overwrite the official description box with Heaven title + description.
 - Patch `SetAscensionLevel(int)` to clear Heaven selection when the player moves back into official ascension `> 0`.
@@ -30,9 +30,9 @@ Use Harmony to hijack the official ascension panel instead of injecting a custom
 The official ascension panel becomes the only difficulty UI:
 
 - Official ascension `0` + left arrow => Heaven `1`
-- Heaven `1` + left arrow => Heaven `2` ... Heaven `10`
-- Heaven `1..10` + right arrow => move back toward official ascension `0`
-- At Heaven `10`, the left arrow is hidden because there is no further Heaven level to advance into
+- Heaven `1` + left arrow => Heaven `2` ... Heaven `11`
+- Heaven `1..11` + right arrow => move back toward official ascension `0`
+- At Heaven `11`, the left arrow is hidden because there is no further Heaven level to advance into
 - The official description box shows the current Heaven title and description while Heaven is selected
 
 ## Preference persistence
@@ -47,6 +47,7 @@ Current repo behavior:
 - Heaven descriptions communicate inheritance:
   - Heaven `1` enables the ancient option-count restriction
   - Heaven `6` additionally enables the Neow HP override
+  - Heaven `11` makes `Save and Quit` destroy the current run save instead of preserving the run
   - higher Heaven levels inherit lower Heaven effects
 
 ## Unlock gating

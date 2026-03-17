@@ -103,6 +103,23 @@ internal static class HeavenPersistence
         }
     }
 
+    public static void ClearCurrentRunSelection()
+    {
+        try
+        {
+            string path = GetMetadataPath();
+            if (!File.Exists(path))
+                return;
+
+            File.Delete(path);
+            Log.Info($"[HeavenMode] Cleared Heaven current-run metadata at {path}");
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[HeavenMode] ClearCurrentRunSelection failed: {ex}");
+        }
+    }
+
     public static int LoadPreferredSelection(ModelId characterId)
     {
         try

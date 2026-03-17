@@ -12,6 +12,7 @@
   "HEAVEN_8": "8",
   "HEAVEN_9": "9",
   "HEAVEN_10": "10",
+  "HEAVEN_11": "11",
   "HEAVEN_RUN_TITLE_1": "天堂1",
   "HEAVEN_RUN_TITLE_2": "天堂2",
   "HEAVEN_RUN_TITLE_3": "天堂3",
@@ -22,6 +23,7 @@
   "HEAVEN_RUN_TITLE_8": "天堂8",
   "HEAVEN_RUN_TITLE_9": "天堂9",
   "HEAVEN_RUN_TITLE_10": "天堂10",
+  "HEAVEN_RUN_TITLE_11": "天堂11",
   "HEAVEN_TITLE_1": "逐渐消逝的选择",
   "HEAVEN_TITLE_2": "残酷交易",
   "HEAVEN_TITLE_3": "未愈之伤",
@@ -32,6 +34,7 @@
   "HEAVEN_TITLE_8": "稀缺药剂",
   "HEAVEN_TITLE_9": "精神疲惫",
   "HEAVEN_TITLE_10": "三王试炼",
+  "HEAVEN_TITLE_11": "无路可退",
   "HEAVEN_DESC_1": "塔逐渐剥夺你的选择权。命运开始单一。",
   "HEAVEN_DESC_2": "每一次机遇都伴随代价。",
   "HEAVEN_DESC_3": "伤口难以愈合，依靠微弱的补给继续前行。",
@@ -41,5 +44,6 @@
   "HEAVEN_DESC_7": "每一次杀戮，都要向塔献上自己的血。",
   "HEAVEN_DESC_8": "治疗与补给极度匮乏，只能依赖有限资源。",
   "HEAVEN_DESC_9": "反复消耗牌库会让思维迟缓、行动迟钝。",
-  "HEAVEN_DESC_10": "塔孜孜不倦地考验着挑战者。最终战斗中，塔会吞噬你的牌。"
+  "HEAVEN_DESC_10": "塔孜孜不倦地考验着挑战者。最终战斗中，塔会吞噬你的牌。",
+  "HEAVEN_DESC_11": "一旦踏入尖塔，就再也没有退路。"
 }
