@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Godot;
 using MegaCrit.Sts2.Core.Commands;
+using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Context;
 using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
@@ -71,6 +72,12 @@ internal static class Patches_Heaven7
 
                     totalHpLoss += actualLoss;
                     await CreatureCmd.SetCurrentHp(playerCreature, (decimal)newHp);
+                    if (playerCreature.IsDead)
+                    {
+                        // Ensure player-death cleanup is fully applied before checksums are generated.
+                        await CombatManager.Instance.HandlePlayerDeath(player);
+                    }
+
                     PlayKillPunishFeedback(playerCreature, actualLoss);
                 }
             }

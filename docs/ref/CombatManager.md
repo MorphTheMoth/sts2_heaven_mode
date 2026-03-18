@@ -43,3 +43,16 @@ For this mod:
 - apply `card.EnergyCost.AddThisCombat(1)`
 
 This keeps the effect scoped to the current combat while reusing the vanilla temporary energy-cost modifier system.
+
+## Player death cleanup
+
+- `MegaCrit.Sts2.Core.Combat.CombatManager.HandlePlayerDeath(Player)`
+- called from `MegaCrit.Sts2.Core.Commands.CreatureCmd.KillWithoutCheckingWinCondition(Creature, bool, int)` when a player dies in combat
+
+This is the vanilla cleanup path for a dead player during combat. It does three stateful things that matter for multiplayer consistency:
+
+- removes all cards in the dead player's combat piles from combat
+- sets the player's `Energy` to `0`
+- sets the player's `Stars` to `0`
+
+For Heaven 7, this matters because the kill-punishment damage can kill a player as a side effect of killing a monster. If the death cleanup is not finished before checksum generation, the most obvious divergence is usually `Energy` remaining non-zero on one peer.
