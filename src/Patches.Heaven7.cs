@@ -9,14 +9,12 @@ using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Helpers;
 using MegaCrit.Sts2.Core.Logging;
-using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.Nodes;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
 using MegaCrit.Sts2.Core.Nodes.Vfx;
 using MegaCrit.Sts2.Core.Nodes.Vfx.Utilities;
 using MegaCrit.Sts2.Core.Rooms;
 using MegaCrit.Sts2.Core.Runs;
-using MegaCrit.Sts2.Core.ValueProps;
 
 namespace HeavenMode;
 
@@ -24,8 +22,13 @@ internal static class Patches_Heaven7
 {
     private const int DamagePerKill = 2;
 
+    private static bool _applyingPunishment;
+
     internal static Task AfterKill(Task __result, IReadOnlyCollection<Creature> creatures, bool force)
     {
+        if (_applyingPunishment)
+            return __result;
+
         if (HeavenState.SelectedOption < HeavenState.KillPunishLevel)
             return __result;
 
@@ -54,18 +57,26 @@ internal static class Patches_Heaven7
 
             int totalDamage = killedMonsterCount * DamagePerKill;
             int totalHpLoss = 0;
-            foreach (Player player in livingPlayers)
+
+            _applyingPunishment = true;
+            try
             {
-                Creature playerCreature = player.Creature;
-                DamageResult result = playerCreature.LoseHpInternal(totalDamage, ValueProp.Unblockable | ValueProp.Unpowered);
-                if (result.UnblockedDamage <= 0)
-                    continue;
+                foreach (Player player in livingPlayers)
+                {
+                    Creature playerCreature = player.Creature;
+                    int newHp = Math.Max(playerCreature.CurrentHp - totalDamage, 0);
+                    int actualLoss = playerCreature.CurrentHp - newHp;
+                    if (actualLoss <= 0)
+                        continue;
 
-                totalHpLoss += result.UnblockedDamage;
-                PlayKillPunishFeedback(playerCreature, result);
-
-                if (result.WasTargetKilled && playerCreature.IsDead)
-                    await CreatureCmd.Kill(playerCreature, true);
+                    totalHpLoss += actualLoss;
+                    await CreatureCmd.SetCurrentHp(playerCreature, (decimal)newHp);
+                    PlayKillPunishFeedback(playerCreature, actualLoss);
+                }
+            }
+            finally
+            {
+                _applyingPunishment = false;
             }
 
             if (totalHpLoss > 0)
@@ -81,19 +92,11 @@ internal static class Patches_Heaven7
         }
     }
 
-    private static void PlayKillPunishFeedback(Creature creature, DamageResult result)
+    private static void PlayKillPunishFeedback(Creature creature, int damage)
     {
         try
         {
             Node? vfxContainer = NCombatRoom.Instance?.CombatVfxContainer;
-            NDamageNumVfx? damageNum = NDamageNumVfx.Create(creature, result);
-            if (damageNum != null)
-            {
-                if (vfxContainer != null)
-                    vfxContainer.AddChildSafely(damageNum);
-                else
-                    ((Node?)NRun.Instance?.GlobalUi)?.AddChildSafely(damageNum);
-            }
 
             if (vfxContainer != null)
                 vfxContainer.AddChildSafely(NHitSparkVfx.Create(creature));
@@ -103,7 +106,7 @@ internal static class Patches_Heaven7
                 PlayerHurtVignetteHelper.Play();
 
             NGame.Instance?.ScreenShake(
-                result.UnblockedDamage < 6 ? ShakeStrength.Weak : ShakeStrength.Medium,
+                damage < 6 ? ShakeStrength.Weak : ShakeStrength.Medium,
                 ShakeDuration.Short);
         }
         catch (Exception ex)
@@ -112,3 +115,4 @@ internal static class Patches_Heaven7
         }
     }
 }
+

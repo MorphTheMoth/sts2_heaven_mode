@@ -261,6 +261,10 @@ internal static class Patches_CharacterSelect
             HeavenState.SelectedOption = ascensionPanel.Ascension == 0
                 ? Math.Clamp(level, 0, HeavenState.MaxLevel)
                 : 0;
+
+            if (HeavenState.SelectedOption > 0)
+                ((Godot.CanvasItem)ascensionPanel).Visible = true;
+
             RefreshHeavenUi(ascensionPanel);
         }
         catch (Exception ex)

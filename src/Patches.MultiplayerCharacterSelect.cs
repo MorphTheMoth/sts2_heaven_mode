@@ -2,6 +2,7 @@ using System;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Entities.Multiplayer;
 using MegaCrit.Sts2.Core.Logging;
+using MegaCrit.Sts2.Core.Multiplayer.Game.Lobby;
 using MegaCrit.Sts2.Core.Nodes.Screens.CharacterSelect;
 
 namespace HeavenMode;
@@ -9,6 +10,12 @@ namespace HeavenMode;
 [HarmonyPatch(typeof(NCharacterSelectScreen))]
 internal static class Patches_MultiplayerCharacterSelect
 {
+    private static readonly AccessTools.FieldRef<NCharacterSelectScreen, NAscensionPanel> AscensionPanelRef =
+        AccessTools.FieldRefAccess<NCharacterSelectScreen, NAscensionPanel>("_ascensionPanel");
+
+    private static readonly AccessTools.FieldRef<NCharacterSelectScreen, StartRunLobby> LobbyRef =
+        AccessTools.FieldRefAccess<NCharacterSelectScreen, StartRunLobby>("_lobby");
+
     [HarmonyPostfix]
     [HarmonyPatch(nameof(NCharacterSelectScreen.InitializeMultiplayerAsHost))]
     private static void AfterInitializeMultiplayerAsHost(NCharacterSelectScreen __instance)
@@ -48,6 +55,26 @@ internal static class Patches_MultiplayerCharacterSelect
         catch (Exception ex)
         {
             Log.Error($"[HeavenMode] AfterPlayerConnected failed: {ex}");
+        }
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(nameof(NCharacterSelectScreen.AscensionChanged))]
+    private static void AfterAscensionChanged(NCharacterSelectScreen __instance)
+    {
+        try
+        {
+            StartRunLobby lobby = LobbyRef(__instance);
+            if (HeavenState.SelectedOption > 0 || lobby.MaxAscension > 0)
+            {
+                NAscensionPanel panel = AscensionPanelRef(__instance);
+                ((Godot.CanvasItem)panel).Visible = true;
+            }
+        }
+
+        catch (Exception ex)
+        {
+            Log.Error($"[HeavenMode] AfterAscensionChanged failed: {ex}");
         }
     }
 
