@@ -93,23 +93,6 @@ internal static class HeavenLoadRunSync
         SendCurrentLevel(lobby, playerId);
     }
 
-    public static void BroadcastCurrentLevel(NMultiplayerLoadGameScreen screen)
-    {
-        LoadRunLobby? lobby = TryGetLobby(screen);
-        if (lobby == null)
-            return;
-
-        BroadcastCurrentLevel(lobby);
-    }
-
-    public static void BroadcastCurrentLevel(LoadRunLobby lobby)
-    {
-        if (lobby.NetService.Type != NetGameType.Host)
-            return;
-
-        SendCurrentLevel(lobby, null);
-    }
-
     private static void HandleHeavenChanged(
         LoadRunLobby lobby,
         LobbyHeavenLevelChangedMessage message,

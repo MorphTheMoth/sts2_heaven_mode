@@ -1,6 +1,8 @@
 using System;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Logging;
+using MegaCrit.Sts2.Core.Multiplayer.Game;
+using MegaCrit.Sts2.Core.Multiplayer.Game.Lobby;
 using MegaCrit.Sts2.Core.Runs;
 using MegaCrit.Sts2.Core.Saves;
 using MegaCrit.Sts2.Core.Nodes.Screens.MainMenu;
@@ -44,6 +46,12 @@ internal static class Patches_SaveAndLoad
         try
         {
             if (lobby == null)
+                return;
+
+            // Clients receive the Heaven level via network sync (HeavenLoadRunSync) before BeginRun
+            // is triggered. Do not overwrite that synced value with local metadata, which may be
+            // absent or stale on a reconnecting client.
+            if (lobby is LoadRunLobby runLobby && runLobby.NetService.Type == NetGameType.Client)
                 return;
 
             var runProperty = AccessTools.Property(lobby.GetType(), "Run");

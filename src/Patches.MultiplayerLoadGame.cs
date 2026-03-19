@@ -51,20 +51,6 @@ internal static class Patches_MultiplayerLoadGame
     }
 
     [HarmonyPrefix]
-    [HarmonyPatch(nameof(NMultiplayerLoadGameScreen.BeginRun))]
-    private static void BeforeBeginRun(NMultiplayerLoadGameScreen __instance)
-    {
-        try
-        {
-            HeavenLoadRunSync.BroadcastCurrentLevel(__instance);
-        }
-        catch (Exception ex)
-        {
-            Log.Error($"[HeavenMode] Load-game BeforeBeginRun failed: {ex}");
-        }
-    }
-
-    [HarmonyPrefix]
     [HarmonyPatch("CleanUpLobby")]
     private static void BeforeCleanUpLobby(NMultiplayerLoadGameScreen __instance)
     {

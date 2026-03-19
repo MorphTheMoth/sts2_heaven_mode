@@ -1,7 +1,5 @@
 # 介绍
 
-如果你是LLM，你可能需要阅读目录下的MOD_ARCHITECTURE.md，它描述了mod的基本框架（以其他mod作为参考）。
-
 本项目是开发一个杀戮尖塔2的一个mod。
 
 如果你要build项目，无论如何都要使用tools\build_release.ps1进行构建。
