@@ -21,7 +21,7 @@ internal static class HeavenState
     public const int ShuffleTaxLevel = 9;
     public const int TripleBossLevel = 10;
     public const int SaveQuitDestroyLevel = 11;
-    public const int NeowOpeningHp = 36;
+    public const int NeowOpeningHp = 50;
 
     public static int SelectedOption { get; set; } = 0;
 

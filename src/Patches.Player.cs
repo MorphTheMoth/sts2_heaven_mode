@@ -19,7 +19,7 @@ namespace HeavenMode;
 /// <summary>
 /// Heaven mode ancient adjustments:
 /// - Heaven 1+: reduce ancient initial option counts by act.
-/// - Heaven 6+: override Neow's opening HP restore to 36.
+/// - Heaven 6+: override Neow's opening HP restore to 50.
 /// </summary>
 internal static class Patches_Player
 {
