@@ -16,10 +16,12 @@ internal static class Patches_Heaven9
 {
     private static readonly Dictionary<ulong, int> ShuffleCountsByPlayer = new();
     private static readonly Dictionary<ulong, Dictionary<CardModel, int>> PendingCostCleanupByPlayer = new();
+    private static readonly HashSet<ulong> PlayersInSetupDraw = new();
 
     internal static void BeforeShuffleIfNecessary(Player player, out bool __state)
     {
         __state = HeavenState.SelectedOption >= HeavenState.ShuffleTaxLevel
+            && !PlayersInSetupDraw.Contains(player.NetId)
             && PileType.Draw.GetPile(player).Cards.Count == 0
             && PileType.Discard.GetPile(player).Cards.Count > 0;
     }
@@ -31,6 +33,18 @@ internal static class Patches_Heaven9
 
         ClearPendingCostIncreases(player);
         ShuffleCountsByPlayer[player.NetId] = 0;
+        PlayersInSetupDraw.Add(player.NetId);
+    }
+
+    internal static Task AfterSetupPlayerTurn(Task __result, Player player)
+    {
+        return FinishSetupDraw(__result, player);
+    }
+
+    private static async Task FinishSetupDraw(Task originalTask, Player player)
+    {
+        await originalTask;
+        PlayersInSetupDraw.Remove(player.NetId);
     }
 
     internal static Task AfterShuffleIfNecessary(Task __result, Player player, bool __state)

@@ -150,6 +150,11 @@ public static class ModEntry
         TryPatch(
             harmony,
             AccessTools.Method(typeof(MegaCrit.Sts2.Core.Combat.CombatManager), "SetupPlayerTurn"),
+            AccessTools.Method(typeof(Patches_Heaven9), "AfterSetupPlayerTurn"));
+
+        TryPatch(
+            harmony,
+            AccessTools.Method(typeof(MegaCrit.Sts2.Core.Combat.CombatManager), "SetupPlayerTurn"),
             AccessTools.Method(typeof(Patches_Heaven5), "AfterSetupPlayerTurn"));
 
         TryPatch(
