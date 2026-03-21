@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -11,6 +12,28 @@ namespace HeavenMode;
 
 internal static class Patches_Heaven5
 {
+    private static readonly Dictionary<ulong, CardModel> PendingCostCleanupByPlayer = new();
+
+    internal static void BeforeSetupPlayerTurn(Player player)
+    {
+        if (HeavenState.SelectedOption < HeavenState.CostIncreaseLevel)
+            return;
+
+        if (!PendingCostCleanupByPlayer.TryGetValue(player.NetId, out CardModel? card))
+            return;
+
+        try
+        {
+            card.EnergyCost.AddThisCombat(-1);
+            PendingCostCleanupByPlayer.Remove(player.NetId);
+            Log.Info($"[HeavenMode] Cleared Heaven5 opening cost increase for {card.Id.Entry}");
+        }
+        catch (Exception ex)
+        {
+            Log.Error($"[HeavenMode] Heaven5 BeforeSetupPlayerTurn cleanup failed: {ex}");
+        }
+    }
+
     internal static Task AfterSetupPlayerTurn(Task __result, Player player)
     {
         if (HeavenState.SelectedOption < HeavenState.CostIncreaseLevel)
@@ -47,6 +70,7 @@ internal static class Patches_Heaven5
             CardModel target = eligibleCards[index];
             int oldCost = target.EnergyCost.GetWithModifiers(CostModifiers.Local);
             target.EnergyCost.AddThisCombat(1);
+            PendingCostCleanupByPlayer[player.NetId] = target;
             int newCost = target.EnergyCost.GetWithModifiers(CostModifiers.Local);
             Log.Info($"[HeavenMode] Increased opening hand card cost for Heaven={HeavenState.SelectedOption}: {target.Id.Entry} {oldCost}->{newCost}");
         }
